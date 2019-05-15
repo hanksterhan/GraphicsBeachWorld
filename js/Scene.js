@@ -14,9 +14,6 @@ const Scene = function(gl) {
   // this.plane = new GameObject(this.planeMesh);
   // this.plane.position.set(0, 0, 0);
 
-
-  
-
   this.timeAtFirstFrame = new Date().getTime();
   this.timeAtLastFrame = this.timeAtFirstFrame;
 
@@ -29,8 +26,6 @@ const Scene = function(gl) {
     "media/posz.jpg",
     "media/negz.jpg",]
   	));
-
-
 
   // incrementally rendered object to demonstrate combining the incremental rendering and ray casting
   this.vsTrafo = new Shader(gl, gl.VERTEX_SHADER, "trafo_vs.essl");
@@ -63,11 +58,19 @@ const Scene = function(gl) {
   const orange = new ClippedQuadric(
     Uniforms.scene.surfaces.at(0),
     Uniforms.scene.clippers.at(0)
-    );
+  );
   
   orange.setUnitCylinder();
-  // orange.transform(new Mat4().rotate(5).translate(2));
-  orange.transformClipper(new Mat4().rotate(5).translate(2));
+  orange.transform(new Mat4().rotate(0).translate(2));
+  // orange.transformClipper(new Mat4().rotate(5).translate(2));
+
+  const yellow = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(1),
+    Uniforms.scene.clippers.at(1),
+  );
+  yellow.setUnitSphere();
+  yellow.transform(new Mat4().rotate(0).translate(-2).scale(5));
+
 
   // Uniforms.scene.surfaces.at(0).set(
   //   1.0, 0.0, 0.0, 0.0,
@@ -83,6 +86,16 @@ const Scene = function(gl) {
   //   0.0, 0.0, 0.0,-4.0 
   // );
 
+  // directional light:
+  Uniforms.lights.position.at(0).set(5.0, 0.0, 0.0, 0.0);
+  Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
+
+
+  // point light:
+  Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
+  Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
+
+  Uniforms.scene.kds.at(0).set(0.25, 0.88, 0.82);
   gl.enable(gl.DEPTH_TEST);
 };
 

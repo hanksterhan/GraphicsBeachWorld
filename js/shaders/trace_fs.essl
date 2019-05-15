@@ -13,7 +13,14 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   uniform struct {
     mat4 surfaces[16];
     mat4 clippers[16];
+    vec4 kds[16]; // rgb is surface color
+    vec4 kss[16]; 
   } scene;
+
+  uniform struct {
+    vec4 position[8]; // xyz is the direction, w is 0 for direction light, 1 for point light
+    vec4 powerDensity[8]; // w is ignored
+  } lights;
 
   uniform samplerCube envmap;
 
@@ -65,7 +72,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     bestT = 9001.0;
     bestIndex = -1;
 
-    for(int index = 0; index <= 1; index++){
+    for(int index = 0; index <= 2; index++){
       float currentT = intersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
       if (currentT < bestT && currentT > 0.0){
         bestT = currentT;
@@ -90,11 +97,47 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 
       vec4 hit = e + d * bestT;
       vec3 normal = normalize((hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz);
-      fragmentColor = vec4(normal, dot(normal, rayDir));
+      
+      float bestShadowT;
+      int bestShadowIndex;
+
+      // find shading color
+      for(int i=0; i<1; i++){
+        vec4 shadowE = hit; // ray origin
+        shadowE.xyz += normal * 0.01; // to offset from the surface
+        vec4 shadowD = lights.position[i]; // ray direction
+        
+        //directional light 
+        if(lights.position[i].w == 0.0){
+          // add to fragment color if there is a shadow casted to it
+          if( !findBestHit(shadowE, shadowD, bestShadowT, bestShadowIndex)){
+            fragmentColor.rgb += max(0.0, dot(normal, lights.position[i].xyz)) * lights.powerDensity[i].xyz * scene.kds[bestShadowIndex].xyz;
+          } 
+        } 
+
+        //else{
+          // point light 
+          // need to check the length
+          //if(length(hit.xyz - lights.position[i].xyz) * lights.position[i].xyz < bestShadowT){
+
+          //} else{
+
+          //}
+        //}
+
+
+      }
+
+      //fragmentColor = vec4(normal, dot(normal, rayDir));
     } else{
       // nothing hit by ray, return enviroment color
 	    fragmentColor = texture(envmap, d.xyz ); // background color
       // gl_FragDepth = 0.9999999; 
     }
+
+    //if( dot(normal, d.xyz) > 0.0){
+    //  normal = -normal;
+    //}
+
   }
 `;
