@@ -14,7 +14,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     mat4 surfaces[16];
     mat4 clippers[16];
     vec4 kds[16]; // rgb is surface color
-    vec4 kss[16]; 
+    vec4 kss[16]; // rgb is spec highlight color, w is shininess
   } scene;
 
   uniform struct {
@@ -111,7 +111,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         if(lights.position[i].w == 0.0){
           // add to fragment color if there is a shadow casted to it
           if( !findBestHit(shadowE, shadowD, bestShadowT, bestShadowIndex)){
-            fragmentColor.rgb += max(0.0, dot(normal, lights.position[i].xyz)) * lights.powerDensity[i].xyz * scene.kds[bestShadowIndex].xyz;
+            fragmentColor.rgb += max(0.0, dot(normal, lights.position[i].xyz)) * lights.powerDensity[i].xyz * scene.kds[bestIndex].xyz;
           } 
         } 
 

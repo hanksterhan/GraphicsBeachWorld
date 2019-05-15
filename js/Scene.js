@@ -96,6 +96,8 @@ const Scene = function(gl) {
   Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.25, 0.88, 0.82);
+  Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24);
+
   gl.enable(gl.DEPTH_TEST);
 };
 
