@@ -98,6 +98,11 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
       vec4 hit = e + d * bestT;
       vec3 normal = normalize((hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz);
       
+      // flip normal towards incoming ray
+      if(dot(normal, d.xyz) > 0.0){
+        normal = -normal;
+      }
+
       float bestShadowT;
       int bestShadowIndex;
 

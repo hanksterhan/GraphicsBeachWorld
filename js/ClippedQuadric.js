@@ -26,6 +26,17 @@ ClippedQuadric.prototype.setUnitCylinder = function(){
                   0, 0, 0, -1);
 }
 
+ClippedQuadric.prototype.setUnitCone = function(){
+      this.A.set(	1, 0, 0, 0,
+                  0, 16, 0, 0,
+                  0, 0, -1, 0,
+                  0, 0, 0, -1);
+      this.B.set(	0, 0, 0, 0,
+                  0, 0, 0, 0,
+                  0, 0, 1, 0,
+                  0, 0, 0, -1);
+}
+
 ClippedQuadric.prototype.transform = function(T){
       T.invert();
       this.A.premul(T);
