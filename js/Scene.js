@@ -6,6 +6,17 @@ const Scene = function(gl) {
 
   this.texturedQuadGeometry = new TexturedQuadGeometry(gl);  
 
+  // ground zero
+  // this.planeGeometry = new PlaneGeometry(gl);
+  // this.planeMaterial = new Material(gl, this.planeProgram);
+  // this.planeMaterial.colorTexture.set(new Texture2D(gl, "media/water.jpg"));
+  // this.planeMesh = new Mesh(this.planeGeometry, this.planeMaterial);
+  // this.plane = new GameObject(this.planeMesh);
+  // this.plane.position.set(0, 0, 0);
+
+
+  
+
   this.timeAtFirstFrame = new Date().getTime();
   this.timeAtLastFrame = this.timeAtFirstFrame;
 
@@ -19,13 +30,7 @@ const Scene = function(gl) {
     "media/negz.jpg",]
   	));
 
-  this.traceMesh = new Mesh(this.texturedQuadGeometry, this.traceMaterial);
 
-  this.gameObjects = [];
-  this.gameObjects.push(new GameObject(this.traceMesh));
-
-  this.camera = new PerspectiveCamera();
-  this.camera.position.set({x:0, y:3, z:15});
 
   // incrementally rendered object to demonstrate combining the incremental rendering and ray casting
   this.vsTrafo = new Shader(gl, gl.VERTEX_SHADER, "trafo_vs.essl");
@@ -47,19 +52,36 @@ const Scene = function(gl) {
     );
   // this.gameObjects.push(new GameObject(this.slowpokeMesh));
 
-  Uniforms.scene.surfaces.at(0).set(
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0, 
-    0.0, 0.0, 0.0,-9.0 
-  );
+  this.traceMesh = new Mesh(this.texturedQuadGeometry, this.traceMaterial);
 
-  Uniforms.scene.clippers.at(0).set(
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 
-    0.0, 0.0, 0.0,-4.0 
-  );
+  this.gameObjects = [];
+  this.gameObjects.push(new GameObject(this.traceMesh));
+
+  this.camera = new PerspectiveCamera();
+  this.camera.position.set({x:0, y:3, z:15});
+
+  const orange = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(0),
+    Uniforms.scene.clippers.at(0)
+    );
+  
+  orange.setUnitCylinder();
+  // orange.transform(new Mat4().rotate(5).translate(2));
+  orange.transformClipper(new Mat4().rotate(5).translate(2));
+
+  // Uniforms.scene.surfaces.at(0).set(
+  //   1.0, 0.0, 0.0, 0.0,
+  //   0.0, 1.0, 0.0, 0.0,
+  //   0.0, 0.0, 1.0, 0.0, 
+  //   0.0, 0.0, 0.0,-9.0 
+  // );
+
+  // Uniforms.scene.clippers.at(0).set(
+  //   1.0, 0.0, 0.0, 0.0,
+  //   0.0, 0.0, 0.0, 0.0,
+  //   0.0, 0.0, 0.0, 0.0, 
+  //   0.0, 0.0, 0.0,-4.0 
+  // );
 
   gl.enable(gl.DEPTH_TEST);
 };
