@@ -28,13 +28,13 @@ ClippedQuadric.prototype.setUnitCylinder = function(){
 
 ClippedQuadric.prototype.setUnitCone = function(){
       this.A.set(	1, 0, 0, 0,
-                  0, 16, 0, 0,
-                  0, 0, -1, 0,
-                  0, 0, 0, -1);
-      this.B.set(	0, 0, 0, 0,
-                  0, 0, 0, 0,
+                  0, -1, 0, 0,
                   0, 0, 1, 0,
-                  0, 0, 0, -1);
+                  0, 0, 0, 0);
+      this.B.set(	0, 0, 0, 0,
+                  0, 1, 0, 0.5,
+                  0, 0, 0, 0,
+                  0,0.5, 0, 0);
 }
 
 ClippedQuadric.prototype.transform = function(T){

@@ -1,7 +1,7 @@
 "use strict";
 const Scene = function(gl) {
   this.vsQuad = new Shader(gl, gl.VERTEX_SHADER, "quad_vs.essl");
-  this.fsTrace = new Shader(gl, gl.FRAGMENT_SHADER, "trace_fs.essl");
+  this.fsTrace = new Shader(gl, gl.FRAGMENT_SHADER, "trace_fs.glsl");
   this.traceProgram = new TexturedProgram(gl, this.vsQuad, this.fsTrace);
 
   this.texturedQuadGeometry = new TexturedQuadGeometry(gl);  
@@ -53,16 +53,9 @@ const Scene = function(gl) {
   this.gameObjects.push(new GameObject(this.traceMesh));
 
   this.camera = new PerspectiveCamera();
-  this.camera.position.set({x:0, y:3, z:15});
+  this.camera.position.set({x:0, y:3, z:40});
 
-  // const cylinder = new ClippedQuadric(
-  //   Uniforms.scene.surfaces.at(0),
-  //   Uniforms.scene.clippers.at(0)
-  // );
-  
-  // cylinder.setUnitCylinder();
-  // cylinder.transform(new Mat4().rotate(0).translate(2));
-  // // cylinder.transformClipper(new Mat4().rotate(5).translate(2));
+
 
   // const sphere = new ClippedQuadric(
   //   Uniforms.scene.surfaces.at(1),
@@ -72,8 +65,8 @@ const Scene = function(gl) {
   // sphere.transform(new Mat4().rotate(0).translate(-2).scale(5));
 
   // const cone = new ClippedQuadric(
-  //   Uniforms.scene.surfaces.at(1),
-  //   Uniforms.scene.clippers.at(1),
+  //   Uniforms.scene.surfaces.at(0),
+  //   Uniforms.scene.clippers.at(0),
   // );
   // cone.setUnitCone();
   
@@ -84,28 +77,52 @@ const Scene = function(gl) {
     0.0, 0.0, 1.0, 0.0, 
     0.0, 0.0, 0.0,-9.0 
   );
-
   Uniforms.scene.clippers.at(0).set(
     1.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 1.0, 0.0, 
     0.0, -2.0, 0.0,-5.0
   );
-
   const beach = new ClippedQuadric(
     Uniforms.scene.surfaces.at(0),
     Uniforms.scene.clippers.at(0),
   )
   beach.transform(new Mat4().translate(new Vec3(0.0, -2.0, -3.0)).scale(5.0));
-  // TODO: Project planar texturing, diffuse BRDF on beach
+
+
+  // Parasol 
+  const para_cylinder = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(1),
+    Uniforms.scene.clippers.at(1)
+  );
+  para_cylinder.setUnitCylinder();
+  para_cylinder.transform(new Mat4().translate(new Vec3(0.0, 1.5, -12.0)).scale(new Vec3(0.5, 9.8 ,1.0)).rotate(0.3));
+  Uniforms.scene.surfaces.at(2).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0, -9.0 
+  );
+  Uniforms.scene.clippers.at(2).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, -2.0, 0.0,-4.0
+  );
+  const para_sphere = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(2),
+    Uniforms.scene.clippers.at(2)
+  )
+  para_sphere.transform(new Mat4().scale(5.0).translate(new Vec3(0.0, 10.0, -12.0)).rotate(0.3));
+  para_sphere.transformClipper(new Mat4())
 
   // directional light:
   Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
   Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
 
   // point light:
-  Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
-  Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
+  // Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
+  // Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.855, 0.647, 0.125);
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24);

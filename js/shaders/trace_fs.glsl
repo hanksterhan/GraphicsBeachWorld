@@ -108,13 +108,13 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
       vec3 viewDir = normalize(camera.position - position);
 
       // Lambertian shading - Diffuse 
-      if(bestIndex == 0){
-        fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz);// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore
+      if(bestIndex < 3){
+        fragmentColor.rgb = lights.powerDensity[bestIndex].rgb * max(0.0, dot(worldNormal, lights.position[bestIndex].xyz))* scene.kds[bestIndex].xyz;// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore, is scene.kds[bestIndex].xyz the substitute?
         fragmentColor.a = 1.0;
       }
-      if(bestIndex == 1){
+      if(bestIndex > 2){
         // Phong-Blinn shading
-        //fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz) + lights.powerDensity[0].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lighting.position[0].xyz)), 20.0);// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
+        fragmentColor.rgb = lights.powerDensity[bestIndex].rgb * dot(worldNormal, lights.position[bestIndex].xyz) + lights.powerDensity[bestIndex].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lights.position[bestIndex].xyz)), 20.0) * scene.kds[bestIndex].xyz;// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
       }
 
 
