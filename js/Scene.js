@@ -99,9 +99,6 @@ const Scene = function(gl) {
   beach.transform(new Mat4().translate(new Vec3(0.0, -2.0, -3.0)).scale(5.0));
   // TODO: Project planar texturing, diffuse BRDF on beach
 
-
-  
-
   // directional light:
   Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
   Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
