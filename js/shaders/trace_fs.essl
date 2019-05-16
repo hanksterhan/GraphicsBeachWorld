@@ -95,14 +95,30 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
       // vec4 ndcHit = hit * camera.viewProjMatrix;
       // gl_FragDepth = ndcHit.z / ndcHit.w * 0.5 + 0.5;
 
-      vec4 hit = e + d * bestT;
-      vec3 normal = normalize((hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz);
+      vec4 hit = e + d * bestT; // worldPosition
+      vec3 worldNormal = (hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz;
+      vec3 normal = normalize(worldNormal);
       
       // flip normal towards incoming ray
       if(dot(normal, d.xyz) > 0.0){
         normal = -normal;
       }
+      
+      vec3 position = hit.xyz / hit.w;
+      vec3 viewDir = normalize(camera.position - position);
 
+      // Lambertian shading - Diffuse 
+      if(bestIndex == 0){
+        fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz);// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore
+        fragmentColor.a = 1.0;
+      }
+      if(bestIndex == 1){
+        // Phong-Blinn shading
+        //fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz) + lights.powerDensity[0].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lighting.position[0].xyz)), 20.0);// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
+      }
+
+
+      // Shadow rays
       float bestShadowT;
       int bestShadowIndex;
 
@@ -134,25 +150,9 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
       }
 
     } else{
-      // no shadow - implement desired shading 
+      // primary ray does not intersect anything, show environment
 	    fragmentColor = texture(envmap, d.xyz ); // background color
       // gl_FragDepth = 0.9999999; 
-
-      // Define necessary variables
-      // vec4 hit = e + d * bestT; // worldPosition
-      // vec3 worldNormal = (hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz;
-      // vec3 normal = normalize(worldNormal); // worldNormal
-
-      // vec3 position = hit.xyz / hit.w;
-      // vec3 viewDir = normalize(camera.position - position);
-
-      // Lambertian shading - Diffuse 
-      //fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz);// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore
-      //fragmentColor.a = 1.0;
-
-      // Phong-Blinn shading
-      //fragmentColor.rgb = lights.powerDensity[0].rgb * dot(worldNormal, lights.position[0].xyz) + lights.powerDensity[0].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lighting.position[0].xyz)), 20.0);// * texture(colorTexture, texCoord).rgb ;
-
     }
   }
 `;
