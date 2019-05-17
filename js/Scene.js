@@ -55,22 +55,8 @@ const Scene = function(gl) {
   this.camera = new PerspectiveCamera();
   this.camera.position.set({x:0, y:3, z:40});
 
-
-
-  // const sphere = new ClippedQuadric(
-  //   Uniforms.scene.surfaces.at(1),
-  //   Uniforms.scene.clippers.at(1),
-  // );
-  // sphere.setUnitSphere();
-  // sphere.transform(new Mat4().rotate(0).translate(-2).scale(5));
-
-  // const cone = new ClippedQuadric(
-  //   Uniforms.scene.surfaces.at(0),
-  //   Uniforms.scene.clippers.at(0),
-  // );
-  // cone.setUnitCone();
   
-  // Beach
+  // Beach Uniform index 0
   Uniforms.scene.surfaces.at(0).set(
     1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, 0.0,
@@ -81,17 +67,17 @@ const Scene = function(gl) {
     1.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 1.0, 0.0, 
-    0.0, -2.0, 0.0,-5.0
+    0.0, 0.0, 0.0,-5.0
   );
   const beach = new ClippedQuadric(
     Uniforms.scene.surfaces.at(0),
     Uniforms.scene.clippers.at(0),
   );
-  beach.transform(new Mat4().translate(new Vec3(0.0, -2.0, -3.0)).scale(new Vec3(20.0, 5.0, 8.0)));
+  beach.transform(new Mat4().translate(new Vec3(0.0, -1.80, -3.0)).scale(new Vec3(20.0, 5.0, 8.0)));
   Uniforms.scene.modelMatrixInverse.at(0).set(beach.modelMatrixInverse);
 
 
-  // Parasol 
+  // Parasol Uniform index 1 and 2
   const para_cylinder = new ClippedQuadric(
     Uniforms.scene.surfaces.at(1),
     Uniforms.scene.clippers.at(1)
@@ -119,7 +105,7 @@ const Scene = function(gl) {
   Uniforms.scene.modelMatrixInverse.at(2).set(para_sphere.modelMatrixInverse);
   
   
-  // Beach Ball
+  // Beach Ball Uniform index 3
   const beach_ball = new ClippedQuadric(
     Uniforms.scene.surfaces.at(3),
     Uniforms.scene.clippers.at(3)
@@ -128,30 +114,48 @@ const Scene = function(gl) {
   beach_ball.transform(new Mat4().scale(4.0).translate(new Vec3(8.0, 7.0, -12.0)));
   Uniforms.scene.modelMatrixInverse.at(3).set(beach_ball.modelMatrixInverse);
 
+  // Ocean Uniform index 4
+  Uniforms.scene.surfaces.at(4).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0 
+  );  
+  Uniforms.scene.clippers.at(4).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+    
+  const ocean = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(4),
+    Uniforms.scene.clippers.at(4)
+  );
   // UNIFORMS:
 
   // directional light:
-  Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
-  Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
+  // Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
+  // Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
 
   // point light:
-  // Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
-  // Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
+  Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
+  Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.855, 0.647, 0.125); // some yellow - beach
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24); // crimson - parasol cylinder
   Uniforms.scene.kds.at(2).set(0.25, 0.88, 0.82); // turquoise - parasol clipped sphere
   Uniforms.scene.kds.at(3).set(1.00, 0.30, 0.65); // some red - beach ball
   Uniforms.scene.kds.at(4).set(0.00, 0.70, 0.00); // islamic green
+  Uniforms.scene.kds.at(6).set(0.20, 0.33, 1.00); // ultramarine - ocean
   Uniforms.scene.kds.at(5).set(0.25, 0.00, 0.50); // indigo
-  Uniforms.scene.kds.at(6).set(0.20, 0.33, 1.00); // ultramarine
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach
   Uniforms.scene.reflectances.at(1).set(0.00, 0.00, 0.00); // parasol cylinder
   Uniforms.scene.reflectances.at(2).set(0.00, 0.00, 0.00); // parasol clipped sphere 
   Uniforms.scene.reflectances.at(3).set(0.00, 0.00, 0.00); // beach ball
-  Uniforms.scene.reflectances.at(4).set(0.00, 0.00, 0.00);
+  Uniforms.scene.reflectances.at(4).set(0.00, 0.00, 0.00); // ocean
 
 
 

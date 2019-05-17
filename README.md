@@ -4,12 +4,12 @@ An interactive 3D world created using GLSL/ESSL, focused on implementing ray cas
 # Implemented Features
 - Beach
 - Parasol 
-- Beach ball (buggy)
+- Beach ball
 - Sand Castle (TODO)
 - Shadows
-- Disco (TODO)
-- Ocean (TODO)
-- Waves (TODO)
+- Disco (TODO - buggy)
+- Ocean
+- Waves (TODO - implementing)
 - Palm Tree (TODO)
 - Pinking (TODO)
 - Flotsam (TODO)

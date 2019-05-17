@@ -26,6 +26,16 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 
   uniform samplerCube envmap;
 
+  vec3 noiseGrad(vec3 r){
+    vec3 s = vec3(7502.0, 22777.0, 4767.0);
+    vec3 f = vec3(0.0, 0.0, 0.0);
+    for(int i=0; i<16; i++){
+      f += cos( dot(s - vec3(32768.0, 32768.0, 32768.0), r * 40.0));
+      s = mod(s, 32768.0) * 2.0 + floor(s / 32768.0);
+    }
+    return f / 65536.0;
+  }
+
   float intersectQuadric(mat4 A, vec4 e, vec4 d){
     float a = dot(d * A, d);
     float b = dot(d * A, e) + dot(e * A, d);
@@ -84,6 +94,17 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     return (bestT < 9000.0)?true:false; 
   }
 
+  // Lambertian shading - Diffuse 
+  vec3 diffuseLighting(int bestIndex, vec3 worldNormal){
+    return lights.powerDensity[bestIndex].rgb * max(0.0, dot(worldNormal, lights.position[bestIndex].xyz))* scene.kds[bestIndex].xyz;
+  }
+
+  // Phong-Blinn Shading
+  vec3 phongBlinnLighting(int bestIndex, vec3 worldNormal, vec3 viewDir){
+    return lights.powerDensity[bestIndex].rgb * dot(worldNormal, lights.position[bestIndex].xyz) + lights.powerDensity[bestIndex].rgb * vec3(10.0,10.0,10.0) * pow(dot(normalize(worldNormal), normalize(viewDir + lights.position[bestIndex].xyz)), 20.0) * scene.kds[bestIndex].xyz; 
+  }
+
+
   ////////////////////////////////
   // MAIN
   ////////////////////////////////
@@ -117,11 +138,13 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 
         if(bestIndex < 3){
         // Lambertian shading - Diffuse 
-          outColor.rgb += lights.powerDensity[bestIndex].rgb * max(0.0, dot(worldNormal, lights.position[bestIndex].xyz))* scene.kds[bestIndex].xyz * w;// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore, is scene.kds[bestIndex].xyz the substitute?
+          outColor.rgb += diffuseLighting(bestIndex, worldNormal) * w;
           outColor.a = 1.0;
         }
+
+        // beach ball
         if(bestIndex == 3){
-          // Procedural Texturing
+          // Procedural Texturing beach ball
           vec3 modelPosition = (hit * scene.modelMatrixInverse[bestIndex]).xyz;
 
           if(fract(atan(modelPosition.z, modelPosition.x) * 0.5) < 0.5){
@@ -130,11 +153,19 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
             outColor.rgb = vec3(1.0, 1.0, 1.0) * w;
           }
         }
-        if(bestIndex > 2){
+
+        // beach ball
+        if(bestIndex == 3){ 
           // Phong-Blinn shading
-          outColor.rgb += lights.powerDensity[bestIndex].rgb * dot(worldNormal, lights.position[bestIndex].xyz) + lights.powerDensity[bestIndex].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lights.position[bestIndex].xyz)), 20.0) * scene.kds[bestIndex].xyz * w;// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
+          outColor.rgb += phongBlinnLighting(bestIndex, worldNormal, viewDir) * w;
           outColor.a = 1.0;
         }
+
+        // ocean
+        // if(bestIndex == 4){ 
+        //   // Procedural texturing ocean
+
+        // }
 
         // Shadow rays
         float bestShadowT;
@@ -154,15 +185,17 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
             } 
           } 
 
-          //else{
-            // point light 
-            // need to check the length
-            //if(length(hit.xyz - lights.position[i].xyz) * lights.position[i].xyz < bestShadowT){
+          // point light 
+          else{
+            if(length((hit.xyz - lights.position[i].xyz) * lights.position[i].xyz) < bestShadowT){
+              vec3 powerDensity = lights.powerDensity[i].rgb / (pow(length(lights.position[i].xyz - (hit.xyz* lights.position[i].w)), 2.0));
+              vec3 lightDir = normalize(lights.position[i].xyz - (hit.xyz * lights.position[i].w));
 
-            //} else{
-
-            //}
-          //}
+              outColor.rgb += powerDensity * max(0.0, dot(hit.xyz, lightDir)) * scene.kds[bestIndex].xyz * w;
+            } else{
+              
+            }
+          }
 
         }
 
