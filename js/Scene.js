@@ -142,9 +142,9 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24); // crimson - parasol cylinder
   Uniforms.scene.kds.at(2).set(0.25, 0.88, 0.82); // turquoise - parasol clipped sphere
   Uniforms.scene.kds.at(3).set(1.00, 0.30, 0.65); // some red - beach ball
-  Uniforms.scene.kds.at(3).set(0.00, 0.70, 0.00); // islamic green
-  Uniforms.scene.kds.at(3).set(0.25, 0.00, 0.50); // indigo
-  Uniforms.scene.kds.at(3).set(0.20, 0.33, 1.00); // ultramarine
+  Uniforms.scene.kds.at(4).set(0.00, 0.70, 0.00); // islamic green
+  Uniforms.scene.kds.at(5).set(0.25, 0.00, 0.50); // indigo
+  Uniforms.scene.kds.at(6).set(0.20, 0.33, 1.00); // ultramarine
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach

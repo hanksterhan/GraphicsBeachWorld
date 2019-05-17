@@ -122,10 +122,13 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         }
         if(bestIndex == 3){
           // Procedural Texturing
-          float w = fract(position.x); // TODO: what is modelPosition?
-          vec3 color = mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), w);
-          outColor.rgb = color * w; 
-          outColor.a = 1.0;
+          vec3 modelPosition = (hit * scene.modelMatrixInverse[bestIndex]).xyz;
+
+          if(fract(atan(modelPosition.z, modelPosition.x) * 0.5) < 0.5){
+            outColor.rgb = scene.kds[bestIndex].xyz * w;
+          } else{
+            outColor.rgb = vec3(1.0, 1.0, 1.0) * w;
+          }
         }
         if(bestIndex > 2){
           // Phong-Blinn shading
