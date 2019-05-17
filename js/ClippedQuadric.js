@@ -2,6 +2,7 @@
 const ClippedQuadric = function(A, B) {
       this.A = A;
       this.B = B;
+      this.modelMatrixInverse;
 }
 
 ClippedQuadric.prototype.setUnitSphere = function(){
@@ -38,7 +39,8 @@ ClippedQuadric.prototype.setUnitCone = function(){
 }
 
 ClippedQuadric.prototype.transform = function(T){
-      T.invert();
+      this.modelMatrixInverse = T.invert();
+      T = this.modelMatrixInverse;
       this.A.premul(T);
       this.B.premul(T);
       T.transpose();
@@ -47,7 +49,8 @@ ClippedQuadric.prototype.transform = function(T){
 }
 
 ClippedQuadric.prototype.transformClipper = function(T){
-      T.invert();
+      this.modelMatrixInverse = T.invert();
+      T = this.modelMatrixInverse;
       this.B.premul(T);
       T.transpose();
       this.B.mul(T);

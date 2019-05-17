@@ -88,6 +88,7 @@ const Scene = function(gl) {
     Uniforms.scene.clippers.at(0),
   );
   beach.transform(new Mat4().translate(new Vec3(0.0, -2.0, -3.0)).scale(new Vec3(20.0, 5.0, 8.0)));
+  Uniforms.scene.modelMatrixInverse.at(0).set(beach.modelMatrixInverse);
 
 
   // Parasol 
@@ -96,7 +97,8 @@ const Scene = function(gl) {
     Uniforms.scene.clippers.at(1)
   );
   para_cylinder.setUnitCylinder();
-  para_cylinder.transform(new Mat4().translate(new Vec3(0.0, 0.5, -12.0)).scale(new Vec3(0.5, 9.8 ,1.0)).rotate(0.3));
+  para_cylinder.transform(new Mat4().translate(new Vec3(0.0, 0.5, -12.0)).scale(new Vec3(0.5, 15.0 ,1.0)).rotate(0.3));
+  Uniforms.scene.modelMatrixInverse.at(1).set(para_cylinder.modelMatrixInverse);
   Uniforms.scene.surfaces.at(2).set(
     1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, 0.0,
@@ -114,8 +116,8 @@ const Scene = function(gl) {
     Uniforms.scene.clippers.at(2)
   );
   para_sphere.transform(new Mat4().scale(5.0).translate(new Vec3(0.0, 10.0, -12.0)).rotate(0.3));
-  para_sphere.transformClipper(new Mat4())
-
+  Uniforms.scene.modelMatrixInverse.at(2).set(para_sphere.modelMatrixInverse);
+  
   
   // Beach Ball
   const beach_ball = new ClippedQuadric(
@@ -124,6 +126,7 @@ const Scene = function(gl) {
   );
   beach_ball.setUnitSphere();
   beach_ball.transform(new Mat4().scale(4.0).translate(new Vec3(8.0, 7.0, -12.0)));
+  Uniforms.scene.modelMatrixInverse.at(3).set(beach_ball.modelMatrixInverse);
 
   // UNIFORMS:
 
@@ -143,7 +146,12 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(3).set(0.25, 0.00, 0.50); // indigo
   Uniforms.scene.kds.at(3).set(0.20, 0.33, 1.00); // ultramarine
 
-
+  // (1,1,1) reflects 100% of the light, represents rgb
+  Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach
+  Uniforms.scene.reflectances.at(1).set(0.00, 0.00, 0.00); // parasol cylinder
+  Uniforms.scene.reflectances.at(2).set(0.00, 0.00, 0.00); // parasol clipped sphere 
+  Uniforms.scene.reflectances.at(3).set(0.00, 0.00, 0.00); // beach ball
+  Uniforms.scene.reflectances.at(4).set(0.00, 0.00, 0.00);
 
 
 

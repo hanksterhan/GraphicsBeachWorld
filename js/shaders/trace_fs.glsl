@@ -15,6 +15,8 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     mat4 clippers[16];
     vec4 kds[16]; // rgb is surface color
     vec4 kss[16]; // rgb is spec highlight color, w is shininess
+    vec3 reflectances[16];
+    mat4 modelMatrixInverse[16];
   } scene;
 
   uniform struct {
@@ -82,7 +84,9 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     return (bestT < 9000.0)?true:false; 
   }
 
-
+  ////////////////////////////////
+  // MAIN
+  ////////////////////////////////
   void main(void) {
   	vec4 e = vec4(camera.position, 1);		//< ray origin
   	vec4 d = vec4(normalize(rayDir), 0);	//< ray direction   
@@ -90,77 +94,96 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     float bestT;
     int bestIndex;
 
-    if( findBestHit(e, d, bestT, bestIndex) ){
-      // computing depth from world space hit coordinates 
-      // vec4 ndcHit = hit * camera.viewProjMatrix;
-      // gl_FragDepth = ndcHit.z / ndcHit.w * 0.5 + 0.5;
+    vec3 w = vec3(1.0, 1.0, 1.0); // product of reflectances so far
+    vec4 outColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-      vec4 hit = e + d * bestT; // worldPosition
-      vec3 worldNormal = (hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz;
-      vec3 normal = normalize(worldNormal);
-      
-      // flip normal towards incoming ray
-      if(dot(normal, d.xyz) > 0.0){
-        normal = -normal;
-      }
-      
-      vec3 position = hit.xyz / hit.w;
-      vec3 viewDir = normalize(camera.position - position);
+    for(int j=0; j<= 5; j++){ // how many reflections do we want to follow
+      if( findBestHit(e, d, bestT, bestIndex) ){
+        // computing depth from world space hit coordinates 
+        // vec4 ndcHit = hit * camera.viewProjMatrix;
+        // gl_FragDepth = ndcHit.z / ndcHit.w * 0.5 + 0.5;
 
-      if(bestIndex < 3){
-      // Lambertian shading - Diffuse 
-        fragmentColor.rgb += lights.powerDensity[bestIndex].rgb * max(0.0, dot(worldNormal, lights.position[bestIndex].xyz))* scene.kds[bestIndex].xyz;// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore, is scene.kds[bestIndex].xyz the substitute?
-        fragmentColor.a = 1.0;
-      }
-      if(bestIndex == 3){
-        // Procedural Texturing
-        float w = fract(position.x); // TODO: what is modelPosition?
-        vec3 color = mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), w);
-        fragmentColor.rgb = color; 
-        fragmentColor.a = 1.0;
-      }
-      if(bestIndex > 2){
-        // Phong-Blinn shading
-        fragmentColor.rgb += lights.powerDensity[bestIndex].rgb * dot(worldNormal, lights.position[bestIndex].xyz) + lights.powerDensity[bestIndex].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lights.position[bestIndex].xyz)), 20.0) * scene.kds[bestIndex].xyz;// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
-        fragmentColor.a = 1.0;
-      }
-
-
-      // Shadow rays
-      float bestShadowT;
-      int bestShadowIndex;
-
-      // find shading color
-      for(int i=0; i<1; i++){
-        vec4 shadowE = hit; // ray origin
-        shadowE.xyz += normal * 0.01; // to offset from the surface
-        vec4 shadowD = lights.position[i]; // ray direction
+        vec4 hit = e + d * bestT; // worldPosition
+        vec3 worldNormal = (hit * scene.surfaces[bestIndex] + scene.surfaces[bestIndex] * hit).xyz;
+        vec3 normal = normalize(worldNormal);
         
-        //directional light 
-        if(lights.position[i].w == 0.0){
-          // add to fragment color if there is a shadow casted to it
-          if( !findBestHit(shadowE, shadowD, bestShadowT, bestShadowIndex)){
-            fragmentColor.rgb += max(0.0, dot(normal, lights.position[i].xyz)) * lights.powerDensity[i].xyz * scene.kds[bestIndex].xyz;
+        // flip normal towards incoming ray
+        if(dot(normal, d.xyz) > 0.0){
+          normal = -normal;
+        }
+        
+        vec3 position = hit.xyz / hit.w;
+        vec3 viewDir = normalize(camera.position - position);
+
+        if(bestIndex < 3){
+        // Lambertian shading - Diffuse 
+          outColor.rgb += lights.powerDensity[bestIndex].rgb * max(0.0, dot(worldNormal, lights.position[bestIndex].xyz))* scene.kds[bestIndex].xyz * w;// * texture(colorTexture, texCoord).rgb; // TODO: we don't have colorTexture anymore, is scene.kds[bestIndex].xyz the substitute?
+          outColor.a = 1.0;
+        }
+        if(bestIndex == 3){
+          // Procedural Texturing
+          float w = fract(position.x); // TODO: what is modelPosition?
+          vec3 color = mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), w);
+          outColor.rgb = color * w; 
+          outColor.a = 1.0;
+        }
+        if(bestIndex > 2){
+          // Phong-Blinn shading
+          outColor.rgb += lights.powerDensity[bestIndex].rgb * dot(worldNormal, lights.position[bestIndex].xyz) + lights.powerDensity[bestIndex].rgb * vec3(10.0,10.0,10.0) * pow(dot(normal, normalize(viewDir + lights.position[bestIndex].xyz)), 20.0) * scene.kds[bestIndex].xyz * w;// * texture(colorTexture, texCoord).rgb ; // TODO: we don't have colorTexture anymore
+          outColor.a = 1.0;
+        }
+
+        // Shadow rays
+        float bestShadowT;
+        int bestShadowIndex;
+
+        // find shading color
+        for(int i=0; i<1; i++){
+          vec4 shadowE = hit; // ray origin
+          shadowE.xyz += normal * 0.01; // to offset from the surface
+          vec4 shadowD = lights.position[i]; // ray direction
+          
+          //directional light 
+          if(lights.position[i].w == 0.0){
+            // add to fragment color if there is a shadow casted to it
+            if( !findBestHit(shadowE, shadowD, bestShadowT, bestShadowIndex)){
+              outColor.rgb += max(0.0, dot(normal, lights.position[i].xyz)) * lights.powerDensity[i].xyz * scene.kds[bestIndex].xyz * w;
+            } 
           } 
-        } 
 
-        //else{
-          // point light 
-          // need to check the length
-          //if(length(hit.xyz - lights.position[i].xyz) * lights.position[i].xyz < bestShadowT){
+          //else{
+            // point light 
+            // need to check the length
+            //if(length(hit.xyz - lights.position[i].xyz) * lights.position[i].xyz < bestShadowT){
 
-          //} else{
+            //} else{
 
+            //}
           //}
-        //}
+
+        }
+
+        // update w with the reflectances
+        w *= scene.reflectances[bestIndex]; 
+
+        // if w is close to 0
+        if(length(w) < 0.01){
+          break;
+        }
+
+        // Compute reflected ray - update origin e and dir d
+        e = hit; // ray origin
+        e.xyz += normal * 0.01;
+        d.xyz = reflect(d.xyz, normal); // ray direction
 
 
+      } else{
+        // primary ray does not intersect anything, show environment
+        outColor.rgb += texture(envmap, d.xyz).rgb * w; // background color
+        break;
+        // gl_FragDepth = 0.9999999; 
       }
-
-    } else{
-      // primary ray does not intersect anything, show environment
-	    fragmentColor = texture(envmap, d.xyz ); // background color
-      // gl_FragDepth = 0.9999999; 
     }
+    fragmentColor = outColor;
   }
 `;
