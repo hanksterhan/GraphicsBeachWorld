@@ -133,6 +133,44 @@ const Scene = function(gl) {
   );
   Uniforms.scene.modelMatrixInverse.at(4).set(ocean.modelMatrixInverse);
 
+
+  // sand castle base 1, index 5
+  const sand_castle_1 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(5),
+    Uniforms.scene.clippers.at(5)
+  );
+  sand_castle_1.setUnitCylinder();
+  sand_castle_1.transform(new Mat4().scale(2).translate(new Vec3(25.0, 5.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(5).set(sand_castle_1.modelMatrixInverse);
+
+  // sand castle base 2, index 6
+  const sand_castle_2 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(6),
+    Uniforms.scene.clippers.at(6)
+  );
+  sand_castle_2.setUnitCone();
+  sand_castle_2.transform(new Mat4().scale(new Vec3(3.0, 5.0, 2.0)).translate(new Vec3(25.0, 12.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(6).set(sand_castle_2.modelMatrixInverse);
+  
+  // sand castle base 3, index 7
+  const sand_castle_3 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(7),
+    Uniforms.scene.clippers.at(7)
+  );
+  sand_castle_3.setUnitCylinder();
+  sand_castle_3.transform(new Mat4().scale(new Vec3(2.0, 9.0, 1.0)).translate(new Vec3(32.0, 10.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(7).set(sand_castle_3.modelMatrixInverse);
+
+  // sand castle base 4, index 8
+  const sand_castle_4 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(8),
+    Uniforms.scene.clippers.at(8)
+  );
+  sand_castle_4.setUnitCone();
+  sand_castle_4.transform(new Mat4().scale(new Vec3(3.0, 4.0, 2.0)).translate(new Vec3(32.0, 23.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(8).set(sand_castle_4.modelMatrixInverse);
+
+
   // UNIFORMS:
 
   // directional light:
@@ -140,7 +178,7 @@ const Scene = function(gl) {
   Uniforms.lights.powerDensity.at(0).set(0.5, 0.5, 0.5, 1.0);
 
   // point light:
-  Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
+  Uniforms.lights.position.at(1).set(0.0, 20.0, 8.0, 1.0);
   Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.855, 0.647, 0.125); // some yellow - beach
@@ -148,8 +186,12 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(2).set(0.25, 0.88, 0.82); // turquoise - parasol clipped sphere
   Uniforms.scene.kds.at(3).set(1.00, 0.30, 0.65); // some red - beach ball
   Uniforms.scene.kds.at(4).set(0.20, 0.33, 1.00); // ultramarine - ocean
-  Uniforms.scene.kds.at(5).set(0.25, 0.00, 0.50); // indigo
-  Uniforms.scene.kds.at(6).set(0.00, 0.70, 0.00); // islamic green
+  Uniforms.scene.kds.at(5).set(0.855, 0.647, 0.125); // some yellow - sand castle
+  Uniforms.scene.kds.at(6).set(0.855, 0.647, 0.125); // some yellow - sand castle
+  Uniforms.scene.kds.at(7).set(0.855, 0.647, 0.125); // some yellow - sand castle
+  Uniforms.scene.kds.at(8).set(0.855, 0.647, 0.125); // some yellow - sand castle
+  Uniforms.scene.kds.at(9).set(0.25, 0.00, 0.50); // indigo
+  Uniforms.scene.kds.at(10).set(0.00, 0.70, 0.00); // islamic green
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach
@@ -157,6 +199,14 @@ const Scene = function(gl) {
   Uniforms.scene.reflectances.at(2).set(0.00, 0.00, 0.00); // parasol clipped sphere 
   Uniforms.scene.reflectances.at(3).set(0.00, 0.00, 0.00); // beach ball
   Uniforms.scene.reflectances.at(4).set(0.00, 0.00, 0.00); // ocean
+  Uniforms.scene.reflectances.at(5).set(0.00, 0.00, 0.00); // sand castle
+  Uniforms.scene.reflectances.at(6).set(0.00, 0.00, 0.00); // sand castle
+  Uniforms.scene.reflectances.at(7).set(0.00, 0.00, 0.00); // sand castle
+  Uniforms.scene.reflectances.at(8).set(0.00, 0.00, 0.00); // sand castle
+  Uniforms.scene.reflectances.at(9).set(0.00, 0.00, 0.00); // 
+  Uniforms.scene.reflectances.at(10).set(0.00, 0.00, 0.00); //
+
+
 
 
 

@@ -5,7 +5,7 @@ An interactive 3D world created using GLSL/ESSL, focused on implementing ray cas
 - Beach
 - Parasol 
 - Beach ball
-- Sand Castle (TODO)
+- Sand Castle
 - Shadows
 - Disco (TODO - buggy)
 - Ocean

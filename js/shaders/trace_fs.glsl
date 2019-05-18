@@ -136,7 +136,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         vec3 position = hit.xyz / hit.w;
         vec3 viewDir = normalize(camera.position - position);
 
-        if(bestIndex < 3){
+        if(bestIndex < 3 || bestIndex > 3){
         // Lambertian shading - Diffuse 
           outColor.rgb += diffuseLighting(bestIndex, worldNormal) * w;
           outColor.a = 1.0;
@@ -166,7 +166,6 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
           // Procedural texturing ocean
           outColor.rgb += mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), normalize(normal + noiseGrad(hit.xyz))) * w;
           outColor.a = 1.0;
-          // outColor.rgb = normalize(normal + noiseGrad(hit.xyz)) * scene.kds[bestIndex].xyz * w;
         }
 
         // Shadow rays
@@ -189,7 +188,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 
           // point light 
           else{
-            if(length((hit.xyz - lights.position[i].xyz) * lights.position[i].xyz) < bestShadowT){
+            if(length((hit.xyz - lights.position[i].xyz)) < bestShadowT){
               vec3 powerDensity = lights.powerDensity[i].rgb / (pow(length(lights.position[i].xyz - (hit.xyz* lights.position[i].w)), 2.0));
               vec3 lightDir = normalize(lights.position[i].xyz - (hit.xyz * lights.position[i].w));
 
