@@ -127,16 +127,17 @@ const Scene = function(gl) {
     0.0, 0.0, 0.0, 0.0, 
     0.0, 0.0, 0.0, -1.0
   );
-    
   const ocean = new ClippedQuadric(
     Uniforms.scene.surfaces.at(4),
     Uniforms.scene.clippers.at(4)
   );
+  Uniforms.scene.modelMatrixInverse.at(4).set(ocean.modelMatrixInverse);
+
   // UNIFORMS:
 
   // directional light:
-  // Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
-  // Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
+  Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
+  Uniforms.lights.powerDensity.at(0).set(0.5, 0.5, 0.5, 1.0);
 
   // point light:
   Uniforms.lights.position.at(1).set(0.0, 20.0, -8.0, 1.0);
@@ -146,9 +147,9 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24); // crimson - parasol cylinder
   Uniforms.scene.kds.at(2).set(0.25, 0.88, 0.82); // turquoise - parasol clipped sphere
   Uniforms.scene.kds.at(3).set(1.00, 0.30, 0.65); // some red - beach ball
-  Uniforms.scene.kds.at(4).set(0.00, 0.70, 0.00); // islamic green
-  Uniforms.scene.kds.at(6).set(0.20, 0.33, 1.00); // ultramarine - ocean
+  Uniforms.scene.kds.at(4).set(0.20, 0.33, 1.00); // ultramarine - ocean
   Uniforms.scene.kds.at(5).set(0.25, 0.00, 0.50); // indigo
+  Uniforms.scene.kds.at(6).set(0.00, 0.70, 0.00); // islamic green
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach

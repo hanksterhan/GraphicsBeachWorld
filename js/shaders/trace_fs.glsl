@@ -162,10 +162,12 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         }
 
         // ocean
-        // if(bestIndex == 4){ 
-        //   // Procedural texturing ocean
-
-        // }
+        if(bestIndex == 4){ 
+          // Procedural texturing ocean
+          outColor.rgb += mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), normalize(normal + noiseGrad(hit.xyz))) * w;
+          outColor.a = 1.0;
+          // outColor.rgb = normalize(normal + noiseGrad(hit.xyz)) * scene.kds[bestIndex].xyz * w;
+        }
 
         // Shadow rays
         float bestShadowT;
@@ -192,9 +194,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
               vec3 lightDir = normalize(lights.position[i].xyz - (hit.xyz * lights.position[i].w));
 
               outColor.rgb += powerDensity * max(0.0, dot(hit.xyz, lightDir)) * scene.kds[bestIndex].xyz * w;
-            } else{
-              
-            }
+            } 
           }
 
         }
