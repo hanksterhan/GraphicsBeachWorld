@@ -170,6 +170,65 @@ const Scene = function(gl) {
   sand_castle_4.transform(new Mat4().scale(new Vec3(3.0, 4.0, 2.0)).translate(new Vec3(32.0, 23.0, -15.0)));
   Uniforms.scene.modelMatrixInverse.at(8).set(sand_castle_4.modelMatrixInverse);
 
+  // palm tree trunk, index 9
+  Uniforms.scene.surfaces.at(9).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0,-1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0, 0.0 
+  );  
+  Uniforms.scene.clippers.at(9).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.5,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.5, 0.0, 0.0
+  );
+  const palm = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(9),
+    Uniforms.scene.clippers.at(9),
+  );
+  palm.transform(new Mat4().scale(new Vec3(2.0, 35.0, 2.0)).translate(new Vec3(-20.0, 35.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(9).set(palm.modelMatrixInverse);
+
+  //palm tree leaves, index 10
+  Uniforms.scene.surfaces.at(10).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0,-1.0 
+  );  
+  Uniforms.scene.clippers.at(10).set(
+    0.0, 0.0, 8.0, 0.0,
+    0.0, 1.0, 0.0,-1.8,
+    8.0, 0.0, 0.0, 0.0, 
+    0.0,-1.8, 0.0,-1.0
+  );
+  const leaves1 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(10),
+    Uniforms.scene.clippers.at(10),
+  );
+  leaves1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(10).set(leaves1.modelMatrixInverse);
+
+  //palm tree leaves, index 11
+  Uniforms.scene.surfaces.at(11).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0,-1.0 
+  );  
+  Uniforms.scene.clippers.at(11).set(
+    0.0, 0.0, 8.0, 0.0,
+    0.0, 1.0, 0.0,-1.8,
+    8.0, 0.0, 0.0, 0.0, 
+    0.0,-1.8, 0.0,-1.0
+  );
+  const leaves2 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(11),
+    Uniforms.scene.clippers.at(11),
+  );
+  leaves2.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)).rotate(1.5, -20.0, 25.0, -15.0));
+  Uniforms.scene.modelMatrixInverse.at(10).set(leaves2.modelMatrixInverse);
 
   // UNIFORMS:
 
@@ -190,8 +249,10 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(6).set(0.855, 0.647, 0.125); // some yellow - sand castle
   Uniforms.scene.kds.at(7).set(0.855, 0.647, 0.125); // some yellow - sand castle
   Uniforms.scene.kds.at(8).set(0.855, 0.647, 0.125); // some yellow - sand castle
-  Uniforms.scene.kds.at(9).set(0.25, 0.00, 0.50); // indigo
-  Uniforms.scene.kds.at(10).set(0.00, 0.70, 0.00); // islamic green
+  Uniforms.scene.kds.at(9).set(0.55, 0.27, 0.007); // saddle brown - palm tree
+  Uniforms.scene.kds.at(10).set(0.00, 0.70, 0.00); // islamic green - palm tree leaves
+  Uniforms.scene.kds.at(11).set(0.00, 0.70, 0.00); // islamic green - palm tree leaves
+  Uniforms.scene.kds.at(12).set(0.25, 0.00, 0.50); // indigo
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach

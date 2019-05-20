@@ -164,7 +164,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         // ocean
         if(bestIndex == 4){ 
           // Procedural texturing ocean
-          outColor.rgb += mix(scene.kds[bestIndex].xyz, vec3(0.0, 0.0, 0.0), normalize(normal + noiseGrad(hit.xyz))) * w;
+          outColor.rgb += mix(scene.kds[bestIndex].xyz * w, vec3(1.0, 1.0, 1.0) * w, normalize(normal + noiseGrad(hit.xyz)));
           outColor.a = 1.0;
         }
 
