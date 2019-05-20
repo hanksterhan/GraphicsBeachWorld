@@ -80,15 +80,52 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     return (t1<0.0)?t2:((t2<0.0)?t1:min(t1, t2));
   }
 
+    float pinkingIntersectClippedQuadric(mat4 B, mat4 A, vec4 e, vec4 d){
+    float a = dot(d * A, d);
+    float b = dot(d * A, e) + dot(e * A, d);
+    float c = dot(e * A, e);
+
+    float discriminant = b*b-4.0*a*c;
+    if (discriminant < 0.0){
+      return -1.0; // no intersection
+    }
+    float t1 = (-b + sqrt(discriminant)) / (2.0*a);
+    float t2 = (-b - sqrt(discriminant)) / (2.0*a);
+    
+    vec4 r1 = e + d * t1;
+    vec4 r2 = e + d * t2;
+    
+    float p1 = dot(r1 * B, r1);
+    float p2 = dot(r2 * B, r2);
+
+    if (p1 > 0.0){ // t1 not a good intersection point, it's outside of B
+      t1 = -1.0;
+    } 
+    if (p2 > 0.0){ // t2 not a good intersection point
+      t2 = -1.0;
+    }
+    if (fract(p1) < 0.5){
+      t1 = -1.0;
+    }
+    if (fract(p2) < 0.5){
+      t2 = -1.0;
+    }
+    // return the lesser positive of t1, t2
+    return (t1<0.0)?t2:((t2<0.0)?t1:min(t1, t2));
+  }
+
   bool findBestHit(vec4 e, vec4 d, out float bestT, out int bestIndex){
     bestT = 9001.0;
     bestIndex = -1;
 
     for(int index = 0; index <= 16; index++){
+      float currentT;
       if (index == 10){
-
+        currentT = pinkingIntersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
       }
-      float currentT = intersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
+      else{
+        currentT = intersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
+      }
       if (currentT < bestT && currentT > 0.0){
         bestT = currentT;
         bestIndex = index;

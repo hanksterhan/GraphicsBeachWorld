@@ -205,12 +205,12 @@ const Scene = function(gl) {
   // UNIFORMS:
 
   // directional light:
-  Uniforms.lights.position.at(0).set(0.0, 1.0, 0.0, 0.0);
+  Uniforms.lights.position.at(0).set(0.0, 1.0, 1.0, 0.0);
   Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
 
   // point light: RED
-  Uniforms.lights.position.at(1).set(5.0, 30.0, 8.0, 1.0);
-  Uniforms.lights.powerDensity.at(1).set(1000.0, 0.0, 0.0, 1.0);
+  Uniforms.lights.position.at(1).set(5.0, 30.0, -8.0, 1.0);
+  Uniforms.lights.powerDensity.at(1).set(100.0, 0.0, 0.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.855, 0.647, 0.125); // some yellow - beach
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24); // crimson - parasol cylinder
@@ -223,7 +223,6 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(8).set(0.855, 0.647, 0.125); // some yellow - sand castle
   Uniforms.scene.kds.at(9).set(0.55, 0.27, 0.007); // saddle brown - palm tree
   Uniforms.scene.kds.at(10).set(0.00, 0.70, 0.00); // islamic green - palm tree leaves
-  Uniforms.scene.kds.at(11).set(0.00, 0.70, 0.00); // islamic green - palm tree leaves
   Uniforms.scene.kds.at(12).set(0.25, 0.00, 0.50); // indigo
 
   // (1,1,1) reflects 100% of the light, represents rgb
@@ -236,7 +235,7 @@ const Scene = function(gl) {
   Uniforms.scene.reflectances.at(6).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(7).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(8).set(0.00, 0.00, 0.00); // sand castle
-  Uniforms.scene.reflectances.at(9).set(0.00, 0.00, 0.00); // 
+  Uniforms.scene.reflectances.at(9).set(0.00, 0.00, 0.00); // palm tree leaves
   Uniforms.scene.reflectances.at(10).set(0.00, 0.00, 0.00); //
 
 
