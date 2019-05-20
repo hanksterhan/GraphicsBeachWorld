@@ -11,7 +11,7 @@ An interactive 3D world created using GLSL/ESSL, focused on implementing ray cas
 - Ocean
 - Waves
 - Palm Tree
+- Sky 
 - Pinking (TODO)
 - Flotsam (TODO)
 - This side up (TODO)
-- Sky (TODO)
