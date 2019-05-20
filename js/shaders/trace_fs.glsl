@@ -85,6 +85,9 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     bestIndex = -1;
 
     for(int index = 0; index <= 16; index++){
+      if (index == 10){
+
+      }
       float currentT = intersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
       if (currentT < bestT && currentT > 0.0){
         bestT = currentT;
@@ -164,8 +167,9 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         // ocean
         if(bestIndex == 4){ 
           // Procedural texturing ocean
-          outColor.rgb += mix(scene.kds[bestIndex].xyz * w, vec3(1.0, 1.0, 1.0) * w, normalize(normal + noiseGrad(hit.xyz)));
-          outColor.a = 1.0;
+          normal += noiseGrad(hit.xyz) * 200.0;
+          normal = normalize(normal);
+
         }
 
         // Shadow rays
@@ -173,7 +177,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
         int bestShadowIndex;
 
         // find shading color
-        for(int i=0; i<1; i++){
+        for(int i=0; i<2; i++){
           vec4 shadowE = hit; // ray origin
           shadowE.xyz += normal * 0.01; // to offset from the surface
           vec4 shadowD = lights.position[i]; // ray direction
@@ -187,6 +191,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
           } 
 
           // point light 
+          // TODO: check this
           else{
             if(length((hit.xyz - lights.position[i].xyz)) < bestShadowT){
               vec3 powerDensity = lights.powerDensity[i].rgb / (pow(length(lights.position[i].xyz - (hit.xyz* lights.position[i].w)), 2.0));

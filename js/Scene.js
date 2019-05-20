@@ -6,14 +6,6 @@ const Scene = function(gl) {
 
   this.texturedQuadGeometry = new TexturedQuadGeometry(gl);  
 
-  // ground zero
-  // this.planeGeometry = new PlaneGeometry(gl);
-  // this.planeMaterial = new Material(gl, this.planeProgram);
-  // this.planeMaterial.colorTexture.set(new Texture2D(gl, "media/water.jpg"));
-  // this.planeMesh = new Mesh(this.planeGeometry, this.planeMaterial);
-  // this.plane = new GameObject(this.planeMesh);
-  // this.plane.position.set(0, 0, 0);
-
   this.timeAtFirstFrame = new Date().getTime();
   this.timeAtLastFrame = this.timeAtFirstFrame;
 
@@ -210,35 +202,15 @@ const Scene = function(gl) {
   leaves1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
   Uniforms.scene.modelMatrixInverse.at(10).set(leaves1.modelMatrixInverse);
 
-  //palm tree leaves, index 11
-  Uniforms.scene.surfaces.at(11).set(
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0, 
-    0.0, 0.0, 0.0,-1.0 
-  );  
-  Uniforms.scene.clippers.at(11).set(
-    0.0, 0.0, 8.0, 0.0,
-    0.0, 1.0, 0.0,-1.8,
-    8.0, 0.0, 0.0, 0.0, 
-    0.0,-1.8, 0.0,-1.0
-  );
-  const leaves2 = new ClippedQuadric(
-    Uniforms.scene.surfaces.at(11),
-    Uniforms.scene.clippers.at(11),
-  );
-  leaves2.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)).rotate(1.5, -20.0, 25.0, -15.0));
-  Uniforms.scene.modelMatrixInverse.at(10).set(leaves2.modelMatrixInverse);
-
   // UNIFORMS:
 
   // directional light:
-  Uniforms.lights.position.at(0).set(5.0, 5.0, 0.0, 0.0);
-  Uniforms.lights.powerDensity.at(0).set(0.5, 0.5, 0.5, 1.0);
+  Uniforms.lights.position.at(0).set(0.0, 1.0, 0.0, 0.0);
+  Uniforms.lights.powerDensity.at(0).set(1.0, 1.0, 1.0, 1.0);
 
-  // point light:
-  Uniforms.lights.position.at(1).set(0.0, 20.0, 8.0, 1.0);
-  Uniforms.lights.powerDensity.at(1).set(1000.0, 2000.0, 9000.0, 1.0);
+  // point light: RED
+  Uniforms.lights.position.at(1).set(5.0, 30.0, 8.0, 1.0);
+  Uniforms.lights.powerDensity.at(1).set(1000.0, 0.0, 0.0, 1.0);
 
   Uniforms.scene.kds.at(0).set(0.855, 0.647, 0.125); // some yellow - beach
   Uniforms.scene.kds.at(1).set(0.86, 0.08, 0.24); // crimson - parasol cylinder
@@ -259,7 +231,7 @@ const Scene = function(gl) {
   Uniforms.scene.reflectances.at(1).set(0.00, 0.00, 0.00); // parasol cylinder
   Uniforms.scene.reflectances.at(2).set(0.00, 0.00, 0.00); // parasol clipped sphere 
   Uniforms.scene.reflectances.at(3).set(0.00, 0.00, 0.00); // beach ball
-  Uniforms.scene.reflectances.at(4).set(0.00, 0.00, 0.00); // ocean
+  Uniforms.scene.reflectances.at(4).set(1.00, 1.00, 1.00); // ocean
   Uniforms.scene.reflectances.at(5).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(6).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(7).set(0.00, 0.00, 0.00); // sand castle

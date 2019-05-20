@@ -7,10 +7,10 @@ An interactive 3D world created using GLSL/ESSL, focused on implementing ray cas
 - Beach ball
 - Sand Castle
 - Shadows
-- Disco (TODO - buggy)
+- Disco
 - Ocean
-- Waves (TODO - buggy)
-- Palm Tree (TODO)
+- Waves
+- Palm Tree
 - Pinking (TODO)
 - Flotsam (TODO)
 - This side up (TODO)
