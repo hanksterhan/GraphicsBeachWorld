@@ -224,7 +224,7 @@ const Scene = function(gl) {
     Uniforms.scene.surfaces.at(11),
     Uniforms.scene.clippers.at(11),
   );
-  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  box1.transform(new Mat4().translate(new Vec3(-0.5, 3, 3.0)));
   Uniforms.scene.modelMatrixInverse.at(11).set(box1.modelMatrixInverse);
 
   // Box, index 12
@@ -250,7 +250,7 @@ const Scene = function(gl) {
     Uniforms.scene.surfaces.at(12),
     Uniforms.scene.clippers.at(12),
   );
-  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  box2.transform(new Mat4().translate(new Vec3(0, 2.5, 3.0)));
   Uniforms.scene.modelMatrixInverse.at(12).set(box2.modelMatrixInverse);
 
   // Box, index 13
@@ -266,17 +266,25 @@ const Scene = function(gl) {
     0.0, 0.0, 0.0, 0.0, 
     0.0, 0.0, 0.0, -1.0
   );
-  Uniforms.scene.clippers2.at(2).set(
+  const box3 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(13),
+    Uniforms.scene.clippers.at(13),
+  );
+  var clipper22 = new Mat4(
     1.0, 0.0, 0.0, 1.0,
     0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0, 
     0.0, 0.0, 0.0, -1.0
   );
-  const box3 = new ClippedQuadric(
-    Uniforms.scene.surfaces.at(13),
-    Uniforms.scene.clippers.at(13),
-  );
-  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  Uniforms.scene.clippers2.at(2).set(clipper22);
+
+  var T = new Mat4().translate(new Vec3(-5.0, 3.0, -0.5));
+  box3.transform(T);
+  T = T.invert()
+  clipper22 = clipper22.premul(T);
+  T = T.transpose();
+  clipper22 = clipper22.mul(T);
+  
   Uniforms.scene.modelMatrixInverse.at(13).set(box3.modelMatrixInverse);
 
   // UNIFORMS:
