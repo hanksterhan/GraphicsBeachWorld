@@ -37,7 +37,6 @@ const Scene = function(gl) {
     'media/slowpoke/Slowpoke.json',
     this.slowpokeMaterials
     );
-  // this.gameObjects.push(new GameObject(this.slowpokeMesh));
 
   this.traceMesh = new Mesh(this.texturedQuadGeometry, this.traceMaterial);
 
@@ -202,6 +201,84 @@ const Scene = function(gl) {
   leaves1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
   Uniforms.scene.modelMatrixInverse.at(10).set(leaves1.modelMatrixInverse);
 
+  // Box, index 11
+  Uniforms.scene.surfaces.at(11).set(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0 
+  );  
+  Uniforms.scene.clippers.at(11).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  Uniforms.scene.clippers2.at(0).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  const box1 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(11),
+    Uniforms.scene.clippers.at(11),
+  );
+  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(11).set(box1.modelMatrixInverse);
+
+  // Box, index 12
+  Uniforms.scene.surfaces.at(12).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0 
+  );  
+  Uniforms.scene.clippers.at(12).set(
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  Uniforms.scene.clippers2.at(1).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  const box2 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(12),
+    Uniforms.scene.clippers.at(12),
+  );
+  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(12).set(box2.modelMatrixInverse);
+
+  // Box, index 13
+  Uniforms.scene.surfaces.at(13).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0 
+  );  
+  Uniforms.scene.clippers.at(13).set(
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  Uniforms.scene.clippers2.at(2).set(
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, -1.0
+  );
+  const box3 = new ClippedQuadric(
+    Uniforms.scene.surfaces.at(13),
+    Uniforms.scene.clippers.at(13),
+  );
+  // box1.transform(new Mat4().scale(new Vec3(15.0, 10.0, 5.0)).translate(new Vec3(-20.0, 25.0, -15.0)));
+  Uniforms.scene.modelMatrixInverse.at(13).set(box3.modelMatrixInverse);
+
   // UNIFORMS:
 
   // directional light:
@@ -223,7 +300,10 @@ const Scene = function(gl) {
   Uniforms.scene.kds.at(8).set(0.855, 0.647, 0.125); // some yellow - sand castle
   Uniforms.scene.kds.at(9).set(0.55, 0.27, 0.007); // saddle brown - palm tree
   Uniforms.scene.kds.at(10).set(0.00, 0.70, 0.00); // islamic green - palm tree leaves
-  Uniforms.scene.kds.at(12).set(0.25, 0.00, 0.50); // indigo
+  Uniforms.scene.kds.at(11).set(0.87, 0.72, 0.52); // burlywood - box
+  Uniforms.scene.kds.at(12).set(0.87, 0.72, 0.52); // burlywood - box
+  Uniforms.scene.kds.at(13).set(0.87, 0.72, 0.52); // burlywood - box
+
 
   // (1,1,1) reflects 100% of the light, represents rgb
   Uniforms.scene.reflectances.at(0).set(0.00, 0.00, 0.00); // beach
@@ -235,8 +315,13 @@ const Scene = function(gl) {
   Uniforms.scene.reflectances.at(6).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(7).set(0.00, 0.00, 0.00); // sand castle
   Uniforms.scene.reflectances.at(8).set(0.00, 0.00, 0.00); // sand castle
-  Uniforms.scene.reflectances.at(9).set(0.00, 0.00, 0.00); // palm tree leaves
-  Uniforms.scene.reflectances.at(10).set(0.00, 0.00, 0.00); //
+  Uniforms.scene.reflectances.at(9).set(0.00, 0.00, 0.00); // palm tree 
+  Uniforms.scene.reflectances.at(10).set(0.00, 0.00, 0.00); // palm tree leaves
+  Uniforms.scene.reflectances.at(11).set(0.00, 0.00, 0.00); // box
+  Uniforms.scene.reflectances.at(12).set(0.00, 0.00, 0.00); // box
+  Uniforms.scene.reflectances.at(13).set(0.00, 0.00, 0.00); // box
+
+
 
 
 

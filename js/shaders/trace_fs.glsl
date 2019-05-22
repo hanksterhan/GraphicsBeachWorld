@@ -13,6 +13,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   uniform struct {
     mat4 surfaces[16];
     mat4 clippers[16];
+    mat4 clippers2[3];
     vec4 kds[16]; // rgb is surface color
     vec4 kss[16]; // rgb is spec highlight color, w is shininess
     vec3 reflectances[16];
@@ -80,7 +81,45 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     return (t1<0.0)?t2:((t2<0.0)?t1:min(t1, t2));
   }
 
-    float pinkingIntersectClippedQuadric(mat4 B, mat4 A, vec4 e, vec4 d){
+  float twiceIntersectClippedQuadric(mat4 B, mat4 C, mat4 A, vec4 e, vec4 d){
+    float a = dot(d * A, d);
+    float b = dot(d * A, e) + dot(e * A, d);
+    float c = dot(e * A, e);
+
+    float discriminant = b*b-4.0*a*c;
+    if (discriminant < 0.0){
+      return -1.0; // no intersection
+    }
+    float t1 = (-b + sqrt(discriminant)) / (2.0*a);
+    float t2 = (-b - sqrt(discriminant)) / (2.0*a);
+    
+    vec4 r1 = e + d * t1;
+    vec4 r2 = e + d * t2;
+    
+    float p1 = dot(r1 * B, r1);
+    float p2 = dot(r2 * B, r2);
+
+    float p3 = dot(r1 * C, r1);
+    float p4 = dot(r2 * C, r2);
+
+    if (p1 > 0.0){ // t1 not a good intersection point, it's outside of B
+      t1 = -1.0;
+    } 
+    if (p2 > 0.0){ // t2 not a good intersection point, it's outside of B
+      t2 = -1.0;
+    }
+    if (p3 > 0.0){ // t1 is not a good intersection point, it is outside of C
+      t1 = -1.0;
+    }
+    if (p4 > 0.0){ // t2 is not a good intersection point, it is outside of C
+      t2 = -1.0;
+    }
+
+    // return the lesser positive of t1, t2
+    return (t1<0.0)?t2:((t2<0.0)?t1:min(t1, t2));
+  }
+
+  float pinkingIntersectClippedQuadric(mat4 B, mat4 A, vec4 e, vec4 d){
     float a = dot(d * A, d);
     float b = dot(d * A, e) + dot(e * A, d);
     float c = dot(e * A, e);
@@ -121,7 +160,12 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     for(int index = 0; index <= 16; index++){
       float currentT;
       if (index == 10){
+        // pinking
         currentT = pinkingIntersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
+      }
+      else if(index > 10 && index < 14){
+        // twice clipped 
+        currentT = twiceIntersectClippedQuadric(scene.clippers[index], scene.clippers2[index-11],scene.surfaces[index], e, d);
       }
       else{
         currentT = intersectClippedQuadric(scene.clippers[index], scene.surfaces[index], e, d);
