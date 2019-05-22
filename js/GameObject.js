@@ -21,6 +21,6 @@ GameObject.prototype.draw = function(camera){
 
   this.updateModelMatrix();
   // setting modelViewProjMatrix removed intentionally. it is not used in the quad/trace shaders
-  Uniforms.gameObject.modelViewProjMatrix.set(this.modelMatrix).mul(camera.viewProjMatrix);
+  // Uniforms.gameObject.modelViewProjMatrix.set(this.modelMatrix).mul(camera.viewProjMatrix);
   this.mesh.draw(); 
 };

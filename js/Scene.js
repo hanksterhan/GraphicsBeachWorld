@@ -19,25 +19,6 @@ const Scene = function(gl) {
     "media/hw_alps/alps_ft.jpg",
   ]));
 
-  // incrementally rendered object to demonstrate combining the incremental rendering and ray casting
-  this.vsTrafo = new Shader(gl, gl.VERTEX_SHADER, "trafo_vs.essl");
-  this.fsTextured = new Shader(gl, gl.FRAGMENT_SHADER, "textured_fs.essl");
-  this.texturedProgram = new TexturedProgram(gl, this.vsTrafo, this.fsTextured);
-  this.slowpokeMaterials = [
-    new Material(gl, this.texturedProgram),
-    new Material(gl, this.texturedProgram),
-    ];
-  this.slowpokeMaterials[0].colorTexture.set(
-    new Texture2D(gl, 'media/slowpoke/YadonDh.png'));
-  this.slowpokeMaterials[1].colorTexture.set(
-    new Texture2D(gl, 'media/slowpoke/YadonEyeDh.png'));  
-
-  this.slowpokeMesh = new MultiMesh(
-    gl,
-    'media/slowpoke/Slowpoke.json',
-    this.slowpokeMaterials
-    );
-
   this.traceMesh = new Mesh(this.texturedQuadGeometry, this.traceMaterial);
 
   this.gameObjects = [];
