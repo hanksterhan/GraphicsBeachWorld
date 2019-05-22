@@ -11,13 +11,13 @@ const Scene = function(gl) {
 
   this.traceMaterial = new Material(gl, this.traceProgram);
   this.traceMaterial.envmap.set(new TextureCube(gl, [
-    "media/posx.jpg",
-    "media/negx.jpg",
-    "media/posy.jpg",
-    "media/negy.jpg",
-    "media/posz.jpg",
-    "media/negz.jpg",]
-  	));
+    "media/hw_alps/alps_rt.jpg",
+    "media/hw_alps/alps_lf.jpg",
+    "media/hw_alps/alps_up.jpg",
+    "media/hw_alps/alps_dn.jpg",
+    "media/hw_alps/alps_bk.jpg",
+    "media/hw_alps/alps_ft.jpg",
+  ]));
 
   // incrementally rendered object to demonstrate combining the incremental rendering and ray casting
   this.vsTrafo = new Shader(gl, gl.VERTEX_SHADER, "trafo_vs.essl");
@@ -44,7 +44,7 @@ const Scene = function(gl) {
   this.gameObjects.push(new GameObject(this.traceMesh));
 
   this.camera = new PerspectiveCamera();
-  this.camera.position.set({x:0, y:3, z:40});
+  this.camera.position.set({x:0, y:15, z:40});
 
   
   // Beach Uniform index 0
