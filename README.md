@@ -18,3 +18,6 @@ Navigate the world using the keys WASDQE as well as the mouse to drag the camera
 - Flotsam
 
 Image of scene displaying implemented features is in the media folder [/media/scene.png](https://github.com/hanksterhan/GraphicsBeachWorld/blob/master/media/scene.png)
+
+The image of the beach world scene is also shown below:
+![beach world screenshot](https://github.com/hanksterhan/GraphicsBeachWorld/blob/master/media/scene.png)
